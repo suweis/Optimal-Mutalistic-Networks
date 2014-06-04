@@ -1,5 +1,5 @@
-%by Samir Suweis. Please if you use this code please cite: 
-%Suweis et al., Nature 500 (449) 2013 
+%by Samir Suweis. MATLAB CODE
+%Please if you use this code please cite: Suweis et al., Nature 500 (449) 2013 
 
 %% DESCRIPTION OF THE PROCESS WE WANT TO SIMULATE
 % This algorithm simulates the adpative evolution where each single species
