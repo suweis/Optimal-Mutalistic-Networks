@@ -4,30 +4,30 @@
 
 clear all
 close all
-matlabpool % Use default parallel configuration
+%matlabpool % Uncomment if you want to use default parallel configuration
 
 R=100;
 
-parfor r=1:R
+for r=1:R %use parfor instead of for if you want to use parallel configuration
     tic
-    nAvec=[25];
-    nPvec=[25];
-    beta_vec=[1];
+    nAvec=[5];
+    nPvec=[5];
+    beta_vec=[0.5]; % 0= no competition.
     for dim=1:length(nAvec)
         nP=nPvec(dim);
         nA=nAvec(dim);
         N=nP+nA;
-        c=4./(N.^(0.8));
+        c=0.5;% here connectivity is set to 0.5. If you want to set connectivity as in empirical mutualistic webs, set 4./(N.^(0.8));
         d=1;
         for bb=1:length(beta_vec)
             beta=beta_vec(bb);
            
-            sigma_vec=[0.005];
+            sigma_vec=[0.15];%always check if the initial matrix is stable
             
             for s=1:length(sigma_vec)
                 sigma=sigma_vec(s);
                 
-                xeq=ones(N,1);%0.5+(1.5-0.5).*rand(N,1);
+                xeq=ones(N,1);% set 0.5+(1.5-0.5).*rand(N,1); if you wish random initial population
                 b=zeros(N,N);
                 
                 for i=1:nA
@@ -73,7 +73,9 @@ parfor r=1:R
                 end
                 
                 alpha=b*xeq;
-                T=100*N;
+                T=100*N^(3/2);
+                Xtot=zeros(T,1);
+                
                 for t=1:T
                     bnewA=b(1:nA,nA+1:N);
                     bnewP=b(nA+1:N,1:nA);
@@ -98,7 +100,7 @@ parfor r=1:R
                         xeq=xeqE;
                         b=bnew;
                     end
-
+                    Xtot(t)=sum(xeq);
                 end
                 A=zeros(N,N);
                 for i=1:N
@@ -110,4 +112,5 @@ parfor r=1:R
     end
     toc
 end
-matlabpool close
+
+%matlabpool close %uncomment only if running parallel
