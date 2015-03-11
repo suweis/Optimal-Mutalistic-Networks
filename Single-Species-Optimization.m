@@ -19,29 +19,29 @@
 
 clear all
 close all
-matlabpool    % Use default parallel configuration. IF you do not want to
+%matlabpool    % Use default parallel configuration. IF you do not want to
 %have parallal code comment this and the following line set for instead of parfor
 
 R=1;      %Number of realizations of the process (so to calculate average behaviour)
 
 
-for r=1:R
+for r=1:R %use parfor instead of for if you want to parallelize
     tic
     % Set here  paramters of the model.
-    nAvec=[10];% number of animal pollinators - you can set a vector of different size
-    nPvec=[10];% number of plants
-    beta_vec=[1]; %competition with respect to mutualism, i.e. =1 means competition=mutualism. you can set a vector of different size
+    nAvec=[5];% number of animal pollinators - you can set a vector of different size
+    nPvec=[5];% number of plants
+    beta_vec=[0.5]; %competition with respect to mutualism, i.e. =1 means competition=mutualism. you can set a vector of different size
     for dim=1:length(nAvec)
         nP=nPvec(dim);
         nA=nAvec(dim);
         N=nP+nA;
-        c=4./(N.^(0.8)); % connectivity. Here set as in real data
+        c=0.5; % connectivity. Set 4./(N.^(0.8)) if you want as in real data (mutualistic networks)
         d=1; % self interaction.
         
         for bb=1:length(beta_vec)
             beta=beta_vec(bb);
             
-            sigma_vec=[0.05]; % mutualistic interaction strengths
+            sigma_vec=[0.15]; % mutualistic interaction strengths - check stability of A
             
             for s=1:length(sigma_vec)
                 sigma=sigma_vec(s);
@@ -94,7 +94,7 @@ for r=1:R
                 end
                 
                 alpha=b*xeq;% intrisic grotwh parameter set in order to have positive populations
-                T=100^3/2; % total number of time step
+                T=100*N^(3/2); % total number of time step
                 Xtot=zeros(T,1); 
                 %% Core of the algorithm. I use logical programming.
                 for t=1:T
@@ -146,4 +146,4 @@ for r=1:R
     end
     toc
 end
-matlabpool close
+%matlabpool close % Uncomment if you want to parallelize
